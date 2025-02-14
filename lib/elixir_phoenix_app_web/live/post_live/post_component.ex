@@ -24,7 +24,7 @@ defmodule ElixirPhoenixAppWeb.PostLive.PostComponent do
                 </a>
               </div>
             </div>
-
+            <%= if assigns.userId && @post.nickname == assigns.userId do %>
             <div class="flex space-x-3">
               <.link patch={~p"/posts/#{@post.id}/edit"} class="text-blue-500 hover:text-blue-700">
                 <i class="far fa-edit"></i>
@@ -39,6 +39,8 @@ defmodule ElixirPhoenixAppWeb.PostLive.PostComponent do
                 <i class="far fa-trash-alt"></i>
               </.link>
             </div>
+            <% end %> <!-- Fim do if -->
+
           </div>
         </div>
       </div>

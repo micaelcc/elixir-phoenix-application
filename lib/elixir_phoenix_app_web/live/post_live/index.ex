@@ -6,8 +6,23 @@ defmodule ElixirPhoenixAppWeb.PostLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    if connected?(socket), do: Timeline.subscribe()
-    {:ok, assign(socket, :posts, ElixirPhoenixApp.Timeline.list_posts())}
+    if !_session["user_token"] do
+      {:ok, redirect(socket, to: "/users/log_in")}
+    else
+      user = ElixirPhoenixApp.Accounts.get_user_by_session_token(_session["user_token"])
+
+      if user do
+        if connected?(socket), do: Timeline.subscribe()
+        socket =
+            socket
+            |> assign(:posts, ElixirPhoenixApp.Timeline.list_posts())
+            |> assign(:user, user)
+            |> assign(:userIdNickname, user.nickname)
+        {:ok, socket}
+      else
+        {:error, redirect(socket, to: "/users/log_in")}
+      end
+    end
   end
 
   @impl true
@@ -50,7 +65,14 @@ defmodule ElixirPhoenixAppWeb.PostLive.Index do
 
   @impl true
   def handle_info({:post_created, post}, socket) do
-      {:noreply, update(socket, :posts, fn posts -> [post | posts] end)}
+      user = socket.assigns.user
+      attrs = %{nickname: user.nickname, content: post.content}
+
+      case ElixirPhoenixApp.Timeline.update_post(post, attrs) do
+        {:ok, updated_post} ->
+          {:noreply, update(socket, :posts, fn posts -> [updated_post | posts] end)}
+      end
+
   end
 
   @impl true

@@ -6,6 +6,7 @@ defmodule ElixirPhoenixApp.Accounts.User do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
+    field :nickname, :string
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
 
@@ -37,14 +38,14 @@ defmodule ElixirPhoenixApp.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :nickname])
     |> validate_email(opts)
     |> validate_password(opts)
   end
 
   defp validate_email(changeset, opts) do
     changeset
-    |> validate_required([:email])
+    |> validate_required([:email, :nickname])
     |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
     |> validate_length(:email, max: 160)
     |> maybe_validate_unique_email(opts)

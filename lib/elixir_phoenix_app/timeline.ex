@@ -121,6 +121,7 @@ defmodule ElixirPhoenixApp.Timeline do
     Post.changeset(post, attrs)
   end
 
+  @spec subscribe() :: :ok | {:error, {:already_registered, pid()}}
   def subscribe do
     Phoenix.PubSub.subscribe(ElixirPhoenixApp.PubSub, "posts")
   end

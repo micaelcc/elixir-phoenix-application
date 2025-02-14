@@ -35,6 +35,7 @@ defmodule ElixirPhoenixAppWeb.PostLive.NewPostComponent do
 
   @impl true
   def handle_event("save", %{"post" => %{"content" => content}}, socket) do
+    IO.inspect(socket)
     case Timeline.create_post(%{content: content}) do
       {:ok, _post} ->
         {:noreply,

@@ -10,14 +10,12 @@
       <.live_component
         module={ElixirPhoenixAppWeb.PostLive.PostComponent}
         id={"post-#{post.id}"}
+        userId={@user.nickname}
         post={post}
       />
     <% end %>
   </div>
 
-  <.link patch={~p"/posts/new"}>
-    <.button>New Post</.button>
-  </.link>
 </div>
 
 <.modal :if={@live_action in [:new, :edit]} id="post-modal" show on_cancel={JS.patch(~p"/posts")}>
