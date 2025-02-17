@@ -14,8 +14,9 @@ defmodule ElixirPhoenixAppWeb.PostLive.PostComponent do
           <div class="flex justify-between items-center mt-3 text-gray-500">
             <div class="flex space-x-4">
               <div class="flex items-center space-x-1">
-                <a href="#" phx-click="like" phx-target={@myself}>
-                <i class="far fa-heart"></i> <span>{@post.likes}</span>
+                <a href="#" phx-click="like" phx-target={@myself} class={if @post.likes >= 1, do: "cursor-not-allowed opacity-50", else: ""}>
+                  <i class={if @post.likes >= 1, do: "fas fa-heart text-red-500", else: "far fa-heart"}></i>
+                  <span>{@post.likes}</span>
                 </a>
               </div>
               <div class="flex items-center space-x-1">
@@ -40,7 +41,6 @@ defmodule ElixirPhoenixAppWeb.PostLive.PostComponent do
               </.link>
             </div>
             <% end %> <!-- Fim do if -->
-
           </div>
         </div>
       </div>
@@ -49,7 +49,9 @@ defmodule ElixirPhoenixAppWeb.PostLive.PostComponent do
   end
 
   def handle_event("like", _, socket) do
-    ElixirPhoenixApp.Timeline.inc_likes(socket.assigns.post)
+    if socket.assigns.post.likes < 1 do
+      ElixirPhoenixApp.Timeline.inc_likes(socket.assigns.post)
+    end
     {:noreply, socket}
   end
 
